@@ -1,0 +1,19 @@
+{
+  "version": 2,
+  "skills": {
+    "java-coding-standards": {
+      "source": "affaan-m/ECC",
+      "commit": "8abdf329ecbc9315dc4e3334a5702782f70b8b02",
+      "sourceType": "github",
+      "skillPath": "skills/java-coding-standards/SKILL.md",
+      "computedHash": "11df0ff4be3c05e6edf33ab47709c525fb884090b424f5c76da4610f15b0f83a"
+    },
+    "java-junit": {
+      "source": "github/awesome-copilot",
+      "commit": "a06ba06d11f41b996f8c246e2a452e1bf3a17950",
+      "sourceType": "github",
+      "skillPath": "skills/java-junit/SKILL.md",
+      "computedHash": "53d2be39e3fe25b0d3b5f2aa5fee78689b8e1c63d31bb96150190d31429b60fd"
+    }
+  }
+}
