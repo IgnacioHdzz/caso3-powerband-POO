@@ -12,3 +12,7 @@ description: "Conventions for simple Java applications (Maven/Gradle layout)"
 - One public top-level type per file, and the file name matches the type name.
 - Depend on interfaces for services and repositories; keep fields `private` and expose behavior through methods.
 - Prefer the standard library. Add a dependency only when the standard library cannot do the job.
+- Every method parameter starts with `p` (`pNota`, `pDuracionMs`).
+- No hard-coded values: numbers, texts, paths and ports go in `util/IConstants.java`.
+- Custom exceptions extend a project base exception and live in `excepciones/`.
+- Comments and user-facing text are in Spanish.
