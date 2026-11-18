@@ -44,7 +44,7 @@ status: draft
 - Cambiar únicamente `src/main/java/powerband/Main.java` y las constantes de modo requeridas en `src/main/java/powerband/util/IConstants.java`, además de los tipos backend que define la spec FT-2.
 - Mantener la demo existente como modo predeterminado. Preservar las formas históricas `Main host` y `Main host port` como demo; solo argumentos con prefijo `--` seleccionan explícitamente un modo.
 - En modo instrumentos, iniciar control y micrófono de forma independiente; capturar `DispositivoNoDisponibleException` por dispositivo, notificar sin terminar el otro y detener todo en la ruta de salida.
-- No crear UI Swing ni modificar la secuencia de demo. La ampliación del contrato FT-1 para `ACTUALIZAR_PARAMETROS` queda fuera de esta spec de frontend y requiere aprobación/cambio separado antes de implementar FT-2.
+- No crear UI Swing ni modificar la secuencia de demo. El modo instrumentos consume las APIs FT-1 existentes; `ACTUALIZAR_PARAMETROS` para el órgano ya forma parte del contrato backend y no requiere cambios en esta capa.
 - Mantener mensajes, nombres y parámetros según las convenciones del proyecto. No implementar ni invocar funcionalidades FT-3 a FT-6 ni de Ignacio.
 
 ## Business workflow

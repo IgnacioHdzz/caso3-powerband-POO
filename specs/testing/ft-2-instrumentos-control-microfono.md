@@ -44,7 +44,7 @@ status: draft
 
 - JUnit 5 5.11.4 y Surefire 3.5.2 están declarados en `pom.xml`.
 - Jamepad 2.0.14.0 provee `ControllerState` y `ControllerButton`; `gdx-jnigen-loader:2.0.0` está declarado estable para resolver la dependencia del runtime.
-- Las APIs a verificar son `ComandoSynth.ejecutar(...)`, `ComandoOrgano.ejecutar(...)`, `ComandoBajo.ejecutar(...)`, `Instrumento.iniciar()`/`detener()` (nuevo en FT-2), `Main` y la ampliación pendiente `EventoMusical.Accion.ACTUALIZAR_PARAMETROS`.
+- Las APIs a verificar son `ComandoSynth.ejecutar(...)`, `ComandoOrgano.ejecutar(...)`, `ComandoBajo.ejecutar(...)`, la acción existente `EventoMusical.Accion.ACTUALIZAR_PARAMETROS`, `ClienteSuperCollider.actualizarAmplitudesOrgano(...)`, `Instrumento.iniciar()`/`detener()` (nuevo en FT-2) y `Main`.
 - `javax.sound.sampled` es de la biblioteca estándar; no se agregan librerías de audio ni de mocking.
 
 ## Implementation guidelines
@@ -55,7 +55,7 @@ status: draft
 - Para el procesamiento PCM, usar una fuente de audio sustituible que entregue bloques idénticos a los de `TargetDataLine`; simular ausencia y fallo de apertura con excepciones controladas.
 - Sin `Thread.sleep` para medir algoritmos o enfriamiento; inyectar el reloj y avanzar el tiempo falso. Para pruebas de detención, usar señales de fin/unión con timeout finito y revisar resultado.
 - Mantener constantes de pruebas/configuración de dispositivos en `IConstants`; evitar cambios en specs o pruebas de FT-1 y excluir FT-3 a FT-6 y tareas de Ignacio.
-- Dependencia antes de ejecutar estas pruebas de control en vivo: aprobar e implementar la extensión mínima de FT-1 `ACTUALIZAR_PARAMETROS` y `/n_set` de `a1`–`a3`. Las pruebas de amplitudes no deben reinterpretar las acciones `NOTE_ON`/`NOTE_OFF`.
+- La actualización en vivo se verifica contra el contrato FT-1 ya implementado: `ACTUALIZAR_PARAMETROS` debe producir `/n_set` sobre el nodo activo con `a1`–`a3`, sin crear otro nodo ni repetir `NOTE_ON`. La prueba de FT-2 no modifica ni reinterpreta `NOTE_ON`/`NOTE_OFF`.
 
 ## Business workflow
 
