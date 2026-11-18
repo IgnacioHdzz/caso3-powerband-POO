@@ -14,7 +14,7 @@ status: draft
 ## Inputs
 
 - Estados simulados sucesivos de botones y palancas Jamepad.
-- Bloques de muestras PCM firmadas de 16 bits little-endian y reloj monotónico simulado.
+- Bloques de muestras PCM mono firmadas de 16 bits little-endian a 44 100 Hz y reloj monotónico simulado.
 - Proveedor de dispositivos que puede devolver un control/línea falsos o simular que no existe/no se abre.
 - Dobles de `ComandoSynth` y de los servicios usados por `Main`.
 
@@ -25,24 +25,26 @@ status: draft
 
 ## Test criteria
 
-- Probar las diez asignaciones botón→nota: A/cruz, B/círculo, X/cuadrado, Y/triángulo, `LEFTBUMPER`/L1, `RIGHTBUMPER`/R1 y D-pad arriba/derecha/abajo/izquierda, de acuerdo con la escala aprobada en `IConstants`.
+- Probar las diez asignaciones botón→nota: A/cruz→60, B/círculo→62, X/cuadrado→64, Y/triángulo→65, `LEFTBUMPER`/L1→67, `RIGHTBUMPER`/R1→69, y D-pad arriba→71, derecha→72, abajo→74, izquierda→76; comprobar que son configurables en `IConstants`.
+- Comprobar que la escala configurable inicial del bajo contiene exactamente las notas MIDI `{36, 38, 40, 41, 43, 45, 47, 48, 50, 52, 53, 55, 57, 59, 60}`.
 - Para cada botón, estado neutral→presionado genera un solo `ejecutar(NOTE_ON, nota, null, null, ratios, amplitudes)`; estado presionado repetido no duplica; presionado→neutral genera un solo `ejecutar(NOTE_OFF, nota, null, null, null, null)`.
 - Comprobar presiones simultáneas independientes y que detener/desconectar libera exactamente las notas activas una vez, con errores de liberación reportados.
-- Verificar cada transformación de ejes y sus límites `[0, 1]`, zona muerta y estabilidad en neutro usando estados falsos; comprobar que `NOTE_ON` recibe las amplitudes muestreadas al presionar sin generar retriggers periódicos.
-- Para el micrófono, comparar el RMS normalizado con buffers sintéticos conocidos; cubrir señal silenciosa, bloque sobre umbral y bloque bajo umbral que rearma la detección.
-- Comprobar que solo un flanco sobre umbral dispara, que no hay nuevo disparo antes de vencer el enfriamiento y que un nuevo flanco después del enfriamiento dispara.
-- Verificar frecuencia de cruces por cero de señales sintéticas conocidas, rechazo de bloques cortos/sin cruces y selección de la nota de escala más cercana; en empate se selecciona la menor.
+- Verificar cada transformación de ejes (izquierdo X/Y y derecho Y), zona muerta 0.10, amplitudes base 1.0/0.5/0.25, paso mínimo 0.01, polling de 20 ms, límites `[0, 1]` y estabilidad en neutro usando estados falsos; comprobar que `NOTE_ON` recibe las amplitudes muestreadas al presionar sin generar retriggers periódicos.
+- Con una nota sostenida, simular movimiento fuera de zona muerta y comprobar que se envía la nueva acción `ACTUALIZAR_PARAMETROS` al comando, sin `NOTE_OFF`/`NOTE_ON` adicionales. Confirmar que `/n_set` actualiza `a1`–`a3` en el mismo nodo y que no se genera evento si la nota no está activa.
+- Para el micrófono, comprobar la decodificación PCM mono signed 16-bit little-endian a 44 100 Hz y comparar el RMS normalizado con buffers sintéticos conocidos; cubrir silencio, umbral inicial 0.10, bloque sobre umbral y bloque bajo umbral que rearma la detección.
+- Comprobar que solo un flanco sobre umbral dispara, que no hay nuevo disparo antes del enfriamiento inicial de 150 ms y que un nuevo flanco después del enfriamiento dispara; verificar bloque inicial de 4096 muestras y duración de disparo de 450 ms.
+- Verificar frecuencia de cruces por cero de señales sintéticas conocidas con `frecuenciaHz = (cruces / 2.0) * 44100 / cantidadMuestras`, rechazo de silencio/bloques vacíos/cortos/sin cruces, frecuencia no finita o fuera del rango de la escala, y selección de nota más cercana; en empate se selecciona la menor.
 - Comprobar que cada disparo llama `ComandoSynth.ejecutar(DISPARO, notaElegida, duracionMs, null, null, null)` una vez.
 - Simular control ausente o Jamepad no inicializable y `TargetDataLine` ausente/no disponible; cada caso resulta en `DispositivoNoDisponibleException`, se libera el recurso parcial y el otro instrumento aún puede iniciarse.
 - Comprobar que `detener()` termina los hilos y cierra cada fuente de dispositivo una vez; el micrófono no queda bloqueado en lectura y el control no conserva notas activas.
-- Probar el selector de `Main`: por defecto y con `host port` se conserva demo; `--demo` elige demo; `--instrumentos` intenta iniciar ambos individualmente; al fallar uno, intenta el otro y detiene los iniciados al salir.
+- Probar el selector de `Main`: sin argumentos, con `host` o con `host port` se conserva demo; `--demo [host] [port]` elige demo; `--instrumentos [host] [port]` intenta iniciar ambos individualmente; al fallar uno, intenta el otro y detiene los iniciados al salir.
 - Ejecutar `mvn test`; ejecutar repetidamente las pruebas de audio/control no debe requerir esperas reales, audio del sistema ni variaciones de hardware.
 
 ## Assets
 
 - JUnit 5 5.11.4 y Surefire 3.5.2 están declarados en `pom.xml`.
 - Jamepad 2.0.14.0 provee `ControllerState` y `ControllerButton`; `gdx-jnigen-loader:2.0.0` está declarado estable para resolver la dependencia del runtime.
-- Las APIs a verificar son las existentes: `ComandoSynth.ejecutar(...)`, `ComandoOrgano.ejecutar(...)`, `ComandoBajo.ejecutar(...)`, `Instrumento.iniciar()`/`detener()` (nuevo en FT-2), y `Main`.
+- Las APIs a verificar son `ComandoSynth.ejecutar(...)`, `ComandoOrgano.ejecutar(...)`, `ComandoBajo.ejecutar(...)`, `Instrumento.iniciar()`/`detener()` (nuevo en FT-2), `Main` y la ampliación pendiente `EventoMusical.Accion.ACTUALIZAR_PARAMETROS`.
 - `javax.sound.sampled` es de la biblioteca estándar; no se agregan librerías de audio ni de mocking.
 
 ## Implementation guidelines
@@ -53,7 +55,7 @@ status: draft
 - Para el procesamiento PCM, usar una fuente de audio sustituible que entregue bloques idénticos a los de `TargetDataLine`; simular ausencia y fallo de apertura con excepciones controladas.
 - Sin `Thread.sleep` para medir algoritmos o enfriamiento; inyectar el reloj y avanzar el tiempo falso. Para pruebas de detención, usar señales de fin/unión con timeout finito y revisar resultado.
 - Mantener constantes de pruebas/configuración de dispositivos en `IConstants`; evitar cambios en specs o pruebas de FT-1 y excluir FT-3 a FT-6 y tareas de Ignacio.
-- Decisiones que requieren aprobación antes de codificar: escalas exactas, nota más cercana, umbral RMS, intervalo mínimo, formato PCM, amplitud inicial/calibración de ejes, selector CLI y si las amplitudes deben afectar notas ya sostenidas. FT-1 no expone actualización de controles sin retrigger; cualquier nueva API o acción requiere aprobación/cambio separado de FT-1.
+- Dependencia antes de ejecutar estas pruebas de control en vivo: aprobar e implementar la extensión mínima de FT-1 `ACTUALIZAR_PARAMETROS` y `/n_set` de `a1`–`a3`. Las pruebas de amplitudes no deben reinterpretar las acciones `NOTE_ON`/`NOTE_OFF`.
 
 ## Business workflow
 
