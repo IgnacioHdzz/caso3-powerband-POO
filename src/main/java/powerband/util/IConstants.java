@@ -19,6 +19,8 @@ public final class IConstants {
     public static final char OSC_TAG_STRING = 's';
     public static final int OSC_BYTES_POR_ENTERO = Integer.BYTES;
     public static final int CANTIDAD_ARGUMENTOS_S_NEW_BASE = 4;
+    public static final int CANTIDAD_ARGUMENTOS_N_SET_LIBERACION = 3;
+    public static final int CANTIDAD_ARGUMENTOS_N_SET_ACTUALIZACION_AMPLITUDES = 7;
     public static final int RADIX_HEXADECIMAL = 16;
     public static final int OSC_PRIMER_ID_NODO = 10000;
     public static final int OSC_ADD_TO_HEAD = 0;
@@ -45,6 +47,8 @@ public final class IConstants {
     public static final int TERCERA_MAYOR_SEMITONOS = 4;
     public static final int TERCERA_MENOR_SEMITONOS = 3;
     public static final int CANTIDAD_PARCIALES = 3;
+    public static final float AMPLITUD_MINIMA_ORGANO = 0.0f;
+    public static final float AMPLITUD_MAXIMA_ORGANO = 1.0f;
     public static final double FRECUENCIA_LA4_HZ = 440.0;
     public static final double NOTA_MIDI_LA4 = 69.0;
     public static final double SEMITONOS_POR_OCTAVA = 12.0;
@@ -94,6 +98,7 @@ public final class IConstants {
     public static final long ESPERA_ORGANO_PRUEBA_3_MS = 2000L;
     public static final long ESPERA_LIBERACION_ORGANO_MS = 1000L;
     public static final int HILOS_PRUEBA_CONCURRENCIA = 4;
+    public static final int CANTIDAD_PARTICIPANTES_PRUEBA_CONCURRENCIA = 2;
     public static final int CANTIDAD_COMANDOS_CONCURRENTES = 32;
 
     public static final String ERROR_PUERTO_INVALIDO = "El puerto OSC está fuera del rango permitido.";
@@ -105,4 +110,6 @@ public final class IConstants {
     public static final String ERROR_ACCION_NO_ADMITIDA = "La acción no es válida para este sintetizador.";
     public static final String ERROR_PARAMETROS_INCOMPLETOS = "Faltan parámetros requeridos para el sintetizador.";
     public static final String ERROR_TRES_PARCIALES = "El órgano requiere exactamente tres ratios y tres amplitudes.";
+    public static final String ERROR_AMPLITUDES_ORGANO_INVALIDAS =
+        "El órgano requiere exactamente tres amplitudes finitas entre 0 y 1.";
 }

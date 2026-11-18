@@ -6,7 +6,8 @@ public final class EventoMusical {
     public enum Accion {
         NOTE_ON,
         NOTE_OFF,
-        DISPARO
+        DISPARO,
+        ACTUALIZAR_PARAMETROS
     }
 
     private final long instanteMs;

@@ -48,6 +48,10 @@ public final class ComandoOrgano extends ComandoSynth {
             cliente.apagarOrgano(pNota);
             return;
         }
+        if (pAccion == EventoMusical.Accion.ACTUALIZAR_PARAMETROS) {
+            cliente.actualizarAmplitudesOrgano(pNota, pAmplitudes);
+            return;
+        }
         if (pAccion != EventoMusical.Accion.NOTE_ON
             || pRatios == null
             || pAmplitudes == null

@@ -155,6 +155,53 @@ public class ClienteSuperCollider implements AutoCloseable {
         apagarOrganoInterno(pNota);
     }
 
+    public synchronized void actualizarAmplitudesOrgano(int pNota, float[] pAmplitudes)
+        throws ConexionSynthException {
+        verificarAbierto();
+        if (pAmplitudes == null || pAmplitudes.length != IConstants.CANTIDAD_PARCIALES) {
+            throw new IllegalArgumentException(IConstants.ERROR_AMPLITUDES_ORGANO_INVALIDAS);
+        }
+
+        float[] amplitudes = pAmplitudes.clone();
+        for (float amplitud : amplitudes) {
+            if (!Float.isFinite(amplitud)
+                || amplitud < IConstants.AMPLITUD_MINIMA_ORGANO
+                || amplitud > IConstants.AMPLITUD_MAXIMA_ORGANO) {
+                throw new IllegalArgumentException(IConstants.ERROR_AMPLITUDES_ORGANO_INVALIDAS);
+            }
+        }
+
+        Integer idNodo = nodosOrganos.get(pNota);
+        if (idNodo == null) {
+            return;
+        }
+
+        EventoMusical evento = crearEvento(
+            IConstants.SYNTH_ORGANO,
+            EventoMusical.Accion.ACTUALIZAR_PARAMETROS,
+            pNota,
+            null,
+            null,
+            null,
+            null,
+            null,
+            amplitudes[0],
+            amplitudes[1],
+            amplitudes[2]
+        );
+        enviarMensaje(
+            IConstants.OSC_N_SET,
+            evento,
+            idNodo,
+            IConstants.CONTROL_AMPLITUD_1,
+            amplitudes[0],
+            IConstants.CONTROL_AMPLITUD_2,
+            amplitudes[1],
+            IConstants.CONTROL_AMPLITUD_3,
+            amplitudes[2]
+        );
+    }
+
     private void apagarOrganoInterno(int pNota) throws ConexionSynthException {
         Integer idNodo = nodosOrganos.remove(pNota);
         if (idNodo != null) {
