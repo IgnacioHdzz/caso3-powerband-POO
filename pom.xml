@@ -21,6 +21,17 @@
             <groupId>com.badlogicgames.jamepad</groupId>
             <artifactId>jamepad</artifactId>
             <version>2.0.14.0</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.badlogicgames.gdx</groupId>
+                    <artifactId>gdx-jnigen-loader</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>com.badlogicgames.gdx</groupId>
+            <artifactId>gdx-jnigen-loader</artifactId>
+            <version>2.0.0</version>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
