@@ -1,7 +1,7 @@
 ---
 id: ft-2
 layer: frontend
-status: draft
+status: approved
 ---
 
 # Selector de demo e instrumentos

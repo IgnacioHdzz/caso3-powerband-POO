@@ -1,7 +1,7 @@
 ---
 id: ft-2
 layer: testing
-status: draft
+status: approved
 ---
 
 # Pruebas de instrumentos de control y micrófono
