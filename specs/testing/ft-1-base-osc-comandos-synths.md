@@ -1,7 +1,7 @@
 ---
 id: ft-1
 layer: testing
-status: draft
+status: approved
 ---
 
 # Pruebas de OSC y eventos de synths

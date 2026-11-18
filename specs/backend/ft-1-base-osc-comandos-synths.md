@@ -1,7 +1,7 @@
 ---
 id: ft-1
 layer: backend
-status: draft
+status: approved
 ---
 
 # Base Maven, cliente OSC y comandos de synths
